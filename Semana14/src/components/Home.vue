@@ -18,7 +18,7 @@ export default {
     name: 'Home',
     data() {
       return{
-      titulo: 'Pepe',
+      titulo: 'img',
       descripcion: "Esta es la descripcion"
     }
     },
