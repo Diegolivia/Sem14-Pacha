@@ -2,7 +2,8 @@
   <section>
     <h1>Añadir Nuevo Video</h1>
     <form
-      onsubmit="event.preventDefault();onSubmit();"
+      onsubmit="event.preventDefault();"
+      @submit="onFormSubmit"
       onresize="onReset();"
       autocomplete="off"
       class="form-content"
@@ -28,7 +29,66 @@
 
 <script>
 export default {
-  name: "AddVideo"
+  name: "AddVideo",
+  data:{
+    curr:0
+  },
+  methods: {
+    onFormSubmit: function() {
+      if (this.Validar()) {
+        var frmData = this.frmRead();
+        console.log(frmData);
+        if (true) this.DbInsert(frmData);
+        else this.DbUpdate(frmData);
+        this.frmReset();
+      }
+    },
+    Validar: function() {
+      let isValid = true;
+      if (document.getElementById("ipTitulo").value == "") {
+        isValid = false;
+        document.getElementById("ipTitulo").style.border = "solid 1px red";
+      }
+      if (document.getElementById("ipLink").value == "") {
+        isValid = false;
+        document.getElementById("ipLink").style.border = "solid 1px red";
+      }
+      if (document.getElementById("ipDescripcion").value == "") {
+        isValid = false;
+        document.getElementById("ipDescripcion").style.border = "solid 1px red";
+      }
+      return isValid;
+    },
+    frmRead: function() {
+      var frmData = {};
+      frmData["Titulo"] = document.getElementById("ipTitulo").value;
+      frmData["Link"] = document.getElementById("ipLink").value;
+      frmData["Descripcion"] = document.getElementById("ipDescripcion").value;
+      return frmData;
+    },
+
+    DbInsert: function(data) {
+      fetch("http://localhost:3000/posts/", {
+        method: "POST",
+        body: JSON.stringify({
+          title: data.Titulo,
+          link: data.Link,
+          descripcion: data.Descripcion
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      })
+        .then(response => response.json())
+        .then(json => console.log(json));
+    },
+    frmReset: function() {
+      document.getElementById("ipTitulo").value = "";
+      document.getElementById("ipLink").value = "";
+      document.getElementById("ipDescripcion").value = "";
+      this.curr = null;
+    }
+  }
 };
 </script>
 
@@ -52,17 +112,19 @@ form h2 {
 }
 
 form ul {
-  width: 100%;
+  width: 60%;
+  margin: auto;
+  padding: 0;
 }
 
 form ul li {
   width: 40%;
-  padding: 0 2%;
+
   display: inline-block;
 }
 
 form ul li > * {
-  width: 90%;
+  width: 100%;
 }
 
 form ul li input {
