@@ -30,8 +30,8 @@
 <script>
 export default {
   name: "AddVideo",
-  data:{
-    curr:0
+  data: {
+    curr: 0
   },
   methods: {
     onFormSubmit: function() {
@@ -66,7 +66,6 @@ export default {
       frmData["Descripcion"] = document.getElementById("ipDescripcion").value;
       return frmData;
     },
-
     DbInsert: function(data) {
       fetch("http://localhost:3000/posts/", {
         method: "POST",
@@ -87,6 +86,27 @@ export default {
       document.getElementById("ipLink").value = "";
       document.getElementById("ipDescripcion").value = "";
       this.curr = null;
+    },
+    DbUpdate: function(data) {
+      fetch("http://localhost:3000/posts/", {
+        method: "PUT",
+        body: JSON.stringify({
+          id: data.id,
+          title: data.Titulo,
+          link: data.Link,
+          descripcion: data.Descripcion
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      })
+        .then(response => response.json())
+        .then(json => console.log(json));
+    },
+    DbDelete: function(data) {
+      fetch("http://localhost:3000/posts/", {
+        method: "DELETE"
+      });
     }
   }
 };
